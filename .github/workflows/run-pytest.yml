@@ -40,7 +40,7 @@ jobs:
     # Step 4: Run pytest with environment variables
     - name: Run Pytest
       env:
-        USERNAME: ${{ var.LOGIN_USER_NAME }}
+        USERNAME: ${{ env.LOGIN_USER_NAME }}
         PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
       run: |
         echo 'environment variables... "$USERNAME"-"$PASSWORD"',
