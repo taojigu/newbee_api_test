@@ -1,3 +1,5 @@
+from cgi import parse
+from email.policy import default
 from http.client import responses
 
 import pytest
@@ -10,6 +12,10 @@ from util.exception.failed_api_exception import FailedApiException
 from util.encrypt import Encrypt
 
 
+def pytest_addoption(parser):
+    parser.addoption("--login-name", action="store", default=None, help="login user name of vue client")
+    parser.addoption("--password", action="store", default=None, help="password for vue client user")
+
 @pytest.fixture(scope="session")
 def vue_base_url():
     return "http://backend-api-01.newbee.ltd/"
@@ -21,9 +27,9 @@ def header():
 
 
 @pytest.fixture(scope="session")
-def mall_login_param():
-    login_name = "18810321945"
-    password = "123456"
+def mall_login_param(request):
+    login_name = request.config.getoption("--login-name")
+    password = request.config.getoption("--password")
     md5_password = Encrypt.md5_encrypt(password)
     return {
         "loginName": login_name,
@@ -36,7 +42,9 @@ def login_session(mall_login_param, vue_base_url):
     url = f'{vue_base_url}/api/v1/user/login'
     response = requests.post(url, json=mall_login_param)
     assert response.status_code == 200
-    token = response.json().get("data")
+    response_json = response.json()
+    token = response_json.get("data")
+    assert token is not None
     return {"token":token}
 
 
