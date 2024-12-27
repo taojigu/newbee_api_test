@@ -1,6 +1,3 @@
-from cgi import parse
-from email.policy import default
-from http.client import responses
 
 import pytest
 import requests

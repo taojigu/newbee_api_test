@@ -41,4 +41,4 @@ jobs:
         PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
       run: |
         echo "environment variables...: $USERNAME and $PASSWORD",
-        pytest --login-name="$USERNAME" --password="$PASSWORD" tests/
+        pytest --login-name="$USERNAME" --password="$PASSWORD" test/
