@@ -4,8 +4,6 @@ import requests
 
 from util.exception.bad_response_exception import BadResponseException
 from util.exception.failed_api_exception import FailedApiException
-
-
 from util.encrypt import Encrypt
 
 
