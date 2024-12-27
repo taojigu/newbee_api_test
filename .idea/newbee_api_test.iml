@@ -9,4 +9,11 @@
     <orderEntry type="jdk" jdkName="Python 3.11 (py311env)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PyNamespacePackagesService">
+    <option name="namespacePackageFolders">
+      <list>
+        <option value="$MODULE_DIR$/util" />
+      </list>
+    </option>
+  </component>
 </module>
