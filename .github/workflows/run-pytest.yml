@@ -1,10 +1,7 @@
 name: Run Pytest
-
 on:
-  push:
-    branches:
-      - develop
   pull_request:
+    types: [ labeled ]
 
 jobs:
   setup:
@@ -40,8 +37,8 @@ jobs:
     # Step 4: Run pytest with environment variables
     - name: Run Pytest
       env:
-        USERNAME: ${{ var.LOGIN_USER_NAME }}
+        USERNAME: ${{ secrets.LOGIN_USER_NAME }}
         PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
       run: |
-        echo 'environment variables... "$USERNAME"-"$PASSWORD"',
-        pytest --username="$USERNAME" --password="$PASSWORD" tests/
+        echo "environment variables...: $USERNAME and $PASSWORD",
+        pytest --login-name="$USERNAME" --password="$PASSWORD" test/
