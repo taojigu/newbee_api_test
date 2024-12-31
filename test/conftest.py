@@ -1,3 +1,4 @@
+from threading import activeCount
 
 import pytest
 import requests
@@ -10,10 +11,12 @@ from util.encrypt import Encrypt
 def pytest_addoption(parser):
     parser.addoption("--login-name", action="store", default=None, help="login user name of vue client")
     parser.addoption("--password", action="store", default=None, help="password for vue client user")
+    parser.addoption("--api-base-url", action="store",default="http://backend-api-01.newbee.ltd/", help=" base url of api")
+
 
 @pytest.fixture(scope="session")
-def vue_base_url():
-    return "http://backend-api-01.newbee.ltd/"
+def api_base_url(request):
+    return request.config.getoption("--api-base-url")
 
 
 @pytest.fixture(scope="session")
@@ -33,8 +36,8 @@ def mall_login_param(request):
 
 
 @pytest.fixture(scope="session")
-def login_session(mall_login_param, vue_base_url):
-    url = f'{vue_base_url}/api/v1/user/login'
+def login_session(mall_login_param, api_base_url):
+    url = f'{api_base_url}/api/v1/user/login'
     response = requests.post(url, json=mall_login_param)
     assert response.status_code == 200
     response_json = response.json()
@@ -44,7 +47,7 @@ def login_session(mall_login_param, vue_base_url):
 
 
 @pytest.fixture(scope="session")
-def vue3_client(vue_base_url,login_session):
+def vue3_client(api_base_url,login_session):
     default_headers = {
         "Content-Type": "application/json",
         **login_session
@@ -80,6 +83,6 @@ def vue3_client(vue_base_url,login_session):
                 raise FailedApiException(response)
             return json.get('data')
 
-    return VueAPIClient(base_url=vue_base_url, headers=default_headers)
+    return VueAPIClient(base_url=api_base_url, headers=default_headers)
 
 
