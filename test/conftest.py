@@ -3,9 +3,11 @@ from threading import activeCount
 import pytest
 import requests
 
+from util.const.request_constant import RequestConstant
 from util.exception.bad_response_exception import BadResponseException
 from util.exception.failed_api_exception import FailedApiException
 from util.encrypt import Encrypt
+from util.request.vue_api_client import VueAPIClient
 
 
 def pytest_addoption(parser):
@@ -36,54 +38,31 @@ def mall_login_param(request):
 
 
 @pytest.fixture(scope="session")
-def login_session(mall_login_param, api_base_url):
-    url = f'{api_base_url}/api/v1/user/login'
-    response = requests.post(url, json=mall_login_param)
-    assert response.status_code == 200
-    response_json = response.json()
-    token = response_json.get("data")
+def login_session(mall_login_param,vue3_anonymous_client):
+    result = vue3_anonymous_client.post(RequestConstant.MallUserLoginPath,data=mall_login_param)
+    token = result.get(RequestConstant.DataKey)
     assert token is not None
     return {"token":token}
 
 
 @pytest.fixture(scope="session")
 def vue3_client(api_base_url,login_session):
+
+
     default_headers = {
         "Content-Type": "application/json",
         **login_session
     }
 
-    class VueAPIClient:
-        """
-        A simple Vue3 API client class to encapsulate base URL and headers.
-        """
-
-        def __init__(self, base_url, headers):
-            self.base_url = base_url
-            self.headers = headers
-
-        def get(self, endpoint, headers=None,params=None):
-            merged_headers = {**self.headers, **(headers or {})}
-            response = requests.get(f"{self.base_url}{endpoint}", headers=merged_headers,params=params)
-            return self._process_response(response)
-
-        def post(self, endpoint, data=None, headers=None,params=None):
-            merged_headers = {**self.headers, **(headers or {})}
-            response = requests.post(f"{self.base_url}{endpoint}", json=data, headers=merged_headers,params=params)
-            return self._process_response(response)
-
-        @staticmethod
-        def _process_response(response):
-            if response.status_code != 200:
-                raise BadResponseException(response)
-
-            json = response.json()
-            result_code = json.get('resultCode')
-            result = json.get('data')
-            if result_code != 200:
-                raise FailedApiException(response)
-            return result
-
     return VueAPIClient(base_url=api_base_url, headers=default_headers)
+
+
+@pytest.fixture(scope="session")
+def vue3_anonymous_client(api_base_url):
+    default_headers = {
+        "Content-Type": "application/json",
+    }
+    return VueAPIClient(base_url=api_base_url, headers=default_headers)
+
 
 
