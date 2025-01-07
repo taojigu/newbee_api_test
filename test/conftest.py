@@ -62,14 +62,14 @@ def vue3_client(api_base_url,login_session):
             self.base_url = base_url
             self.headers = headers
 
-        def get(self, endpoint, headers=None):
+        def get(self, endpoint, headers=None,params=None):
             merged_headers = {**self.headers, **(headers or {})}
-            response = requests.get(f"{self.base_url}{endpoint}", headers=merged_headers)
+            response = requests.get(f"{self.base_url}{endpoint}", headers=merged_headers,params=params)
             return self._process_response(response)
 
-        def post(self, endpoint, data=None, headers=None):
+        def post(self, endpoint, data=None, headers=None,params=None):
             merged_headers = {**self.headers, **(headers or {})}
-            response = requests.post(f"{self.base_url}{endpoint}", json=data, headers=merged_headers)
+            response = requests.post(f"{self.base_url}{endpoint}", json=data, headers=merged_headers,params=params)
             return self._process_response(response)
 
         @staticmethod
@@ -78,10 +78,11 @@ def vue3_client(api_base_url,login_session):
                 raise BadResponseException(response)
 
             json = response.json()
-            code = json.get('resultCode')
-            if code != 200:
+            result_code = json.get('resultCode')
+            result = json.get('data')
+            if result_code != 200:
                 raise FailedApiException(response)
-            return json.get('data')
+            return result
 
     return VueAPIClient(base_url=api_base_url, headers=default_headers)
 
