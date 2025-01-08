@@ -39,7 +39,8 @@ def mall_login_param(request):
 
 @pytest.fixture(scope="session")
 def login_session(mall_login_param,vue3_anonymous_client):
-    result = vue3_anonymous_client.post(RequestConstant.MallUserLoginPath,data=mall_login_param)
+    response = vue3_anonymous_client.post(RequestConstant.MallUserLoginPath,data=mall_login_param)
+    result = response.json()
     token = result.get(RequestConstant.DataKey)
     assert token is not None
     return {"token":token}

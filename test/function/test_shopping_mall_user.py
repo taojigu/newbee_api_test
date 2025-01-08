@@ -7,7 +7,8 @@ from util.exception.failed_api_exception import FailedApiException
 
 
 def test_get_user_info(vue3_client):
-    result = vue3_client.get(RequestConstant.MallUserInfoPath)
+    response = vue3_client.get(RequestConstant.MallUserInfoPath)
+    result = response.json()
     result_code = result.get(RequestConstant.ResultCodeKey)
     assert result_code == 200
     data = result.get(RequestConstant.DataKey)
@@ -52,11 +53,13 @@ def test_register_user(vue3_anonymous_client):
         RequestConstant.LoginNameKey:name,
         RequestConstant.PasswordKey:password
     }
-    result = vue3_anonymous_client.post(RequestConstant.MallUserRegisterPath,data=register_data)
+    response = vue3_anonymous_client.post(RequestConstant.MallUserRegisterPath,data=register_data)
+    result = response.json()
     result_code = result.get(RequestConstant.ResultCodeKey)
     assert result_code == 200
     login_data = RequestConstant.login_data(name,Encrypt.md5_encrypt(password))
-    result = vue3_anonymous_client.post(RequestConstant.MallUserLoginPath,data=login_data)
+    response = vue3_anonymous_client.post(RequestConstant.MallUserLoginPath,data=login_data)
+    result = response.json()
     result_code = result.get(RequestConstant.ResultCodeKey)
     assert result_code ==200
 
