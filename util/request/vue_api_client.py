@@ -32,4 +32,4 @@ class VueAPIClient:
         result_code = json.get('resultCode')
         if result_code != 200:
             raise FailedApiException(response)
-        return json
+        return response
