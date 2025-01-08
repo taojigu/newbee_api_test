@@ -7,7 +7,8 @@ To get the account necessary to test, please go to [mall website](http://47.99.1
 ![img.png](ext/newbee-api-register.png)
 
 **UserName**: 13 digits starting with 13,14,17 or 18, such as `14812341234`,`18900001111`
-**Password**: A string of numbers and letters
+
+**Password**: A string of numbers and letters.
 
 ### How to run test cases
 
