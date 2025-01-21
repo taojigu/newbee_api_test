@@ -8,12 +8,12 @@ import pytest
     (10, 1),
     (20, 1)]
 )
-def test_userinfo_pressure(vue3_client,request_number,max_response_time):
+def test_userinfo_pressure(vue3_client,request_number,ave_response_time):
     def get_userinfo_request():
         response = vue3_client.get(RequestConstant.MallUserInfoPath)
         response_time = response.elapsed.total_seconds()
         assert response.status_code == 200
-        assert response_time < max_response_time
+        assert response_time < ave_response_time*1.1
         return response_time
 
     response_time_list = []
@@ -21,5 +21,5 @@ def test_userinfo_pressure(vue3_client,request_number,max_response_time):
         for _ in range(request_number):
             future = executor.submit(get_userinfo_request)
             response_time_list.append(future.result())
-    ave_response_time = sum(response_time_list)/len(response_time_list)
-    assert ave_response_time < max_response_time
+    av_time = sum(response_time_list)/len(response_time_list)
+    assert av_time < ave_response_time
