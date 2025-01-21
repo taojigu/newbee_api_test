@@ -4,7 +4,7 @@ from util.const.request_constant import RequestConstant
 import pytest
 
 
-@pytest.mark.parametrize("request_number, max_response_time", [
+@pytest.mark.parametrize("request_number, ave_response_time", [
     (10, 1),
     (20, 1)]
 )
